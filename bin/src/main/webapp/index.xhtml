@@ -1,0 +1,178 @@
+<ui:composition template="/WEB-INF/template/layout_padrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<ui:define name="corpo">
+		<h:form>
+			<h2 class="bd-title" id="content">Cadastro de Tarefas</h2>
+			<p>Abaixo escolha um filtro que melhor se aplica a sua
+				necessidade.</p>
+			<div class="row">
+				<div class="col-md-12">
+					<!-- Button trigger modal -->
+					<div class="btn-group" role="group" aria-label="Basic example"
+						style="margin-bottom: 10px">
+						<h:commandButton styleClass="btn btn-sm btn-outline-secondary"
+							action="#{tarefaController.filtrarTodasAbertas}"
+							value="Carregar Todas Em Aberto" />
+						<h:commandButton styleClass="btn btn-sm btn-outline-secondary"
+							action="#{tarefaController.filtrarTodasFinalizadas}"
+							value="Carregar Todas Finalizadas" />
+						<a4j:commandButton styleClass="btn btn-sm btn-outline-secondary"
+							execute="@form" render="@form" value="Por Projeto"
+							oncomplete="#{rich:component('projetoModal')}.modal('show')" />
+						<a4j:commandButton styleClass="btn btn-sm btn-outline-secondary"
+							execute="@form" render="@form" value="Por Desenvolvedor"
+							oncomplete="#{rich:component('desenvolvedorModal')}.modal('show')" />
+					</div>
+				</div>
+			</div>
+			<h:commandButton styleClass="btn btn-sm btn-outline-primary"
+				action="#{tarefaController.criarNovaTarefa}"
+				style="margin-bottom: 10px" value="Adicionar Nova Tarefa" />
+			<h:messages showDetail="true" showSummary="false"
+				errorClass="text-danger" infoClass="text-info" />
+			<rich:dataTable value="#{tarefaController.tarefas}" var="tar"
+				id="dataTable" class="table table-sm table-bordered">
+				<rich:column>
+					<f:facet name="header">#</f:facet>
+					<h:outputText value="#{tar.id}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">Criação</f:facet>
+					<h:outputText value="#{tar.dataCriacao}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">Descrição</f:facet>
+					<h:outputText value="#{tar.descricao}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">Conclusão</f:facet>
+					<h:outputText value="#{tar.dataConclusao}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">Projeto</f:facet>
+					<h:outputText value="#{tar.projeto.descricao}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">Desenvolvedor</f:facet>
+					<h:outputText value="#{tar.desenvolvedor.nomeCompleto}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">Descrição</f:facet>
+					<h:commandLink value="#{tar.descricao}"
+						action="#{tarefaController.preparaParaEdicao}">
+						<f:setPropertyActionListener
+							target="#{tarefaController.tarefaSelecionada}" value="#{tar}" />
+					</h:commandLink>
+				</rich:column>
+				<rich:column>
+					<f:facet name="header"></f:facet>
+					<h:commandLink styleClass="text-danger" value="X"
+						action="#{tarefaController.excluir}">
+						<f:setPropertyActionListener
+							target="#{tarefaController.tarefaSelecionada}" value="#{tar}" />
+					</h:commandLink>
+				</rich:column>
+			</rich:dataTable>
+
+			<!-- Modais -->
+			<rich:popupPanel id="projetoModal" modal="true" autosized="true">
+				<f:facet name="header">
+					<h:outputText value="Filtro por Projeto" />
+				</f:facet>
+				<f:facet name="controls">
+					<h:outputLink value="#"
+						onclick="#{rich:component('projetoModal')}.hide(); return false;">
+                        Fechar
+                    </h:outputLink>
+				</f:facet>
+				<h:form>
+					<div class="form-group">
+						<label>Selecione um projeto:</label>
+						<h:selectOneMenu styleClass="form-control" id="projetos"
+							value="#{tarefaController.idProjeto}">
+							<f:selectItems value="#{tarefaController.projetos}" var="prj"
+								itemLabel="#{prj.descricao}" itemValue="#{prj.id}" />
+						</h:selectOneMenu>
+					</div>
+					<div class="modal-footer">
+						<a4j:commandButton styleClass="btn btn-sm btn-secondary"
+							execute="@form" render="@form" value="Sair"
+							onclick="#{rich:component('projetoModal')}.hide(); return false;" />
+						<a4j:commandButton styleClass="btn btn-sm btn-primary"
+							action="#{tarefaController.filtrarPorProjeto}"
+							value="Aplicar Filtro" />
+					</div>
+				</h:form>
+			</rich:popupPanel>
+
+			<rich:popupPanel id="desenvolvedorModal" modal="true"
+				autosized="true">
+				<f:facet name="header">
+					<h:outputText value="Filtro por Desenvolvedor" />
+				</f:facet>
+				<f:facet name="controls">
+					<h:outputLink value="#"
+						onclick="#{rich:component('desenvolvedorModal')}.hide(); return false;">
+                        Fechar
+                    </h:outputLink>
+				</f:facet>
+				<h:form>
+					<div class="form-group">
+						<label>Selecione um desenvolvedor:</label>
+						<h:selectOneMenu styleClass="form-control" id="desenvolvedores"
+							value="#{tarefaController.idDesenvolvedor}">
+							<f:selectItems value="#{tarefaController.desenvolvedores}"
+								var="dev" itemLabel="#{dev.nomeCompleto}" itemValue="#{dev.id}" />
+						</h:selectOneMenu>
+					</div>
+					<div class="modal-footer">
+						<a4j:commandButton styleClass="btn btn-sm btn-secondary"
+							execute="@form" render="@form" value="Sair"
+							onclick="#{rich:component('desenvolvedorModal')}.hide(); return false;" />
+						<a4j:commandButton styleClass="btn btn-sm btn-primary"
+							action="#{tarefaController.filtrarPorDesenvolvedor}"
+							value="Aplicar Filtro" />
+					</div>
+				</h:form>
+			</rich:popupPanel>
+
+			<!-- Modal de Deletar -->
+			<rich:popupPanel id="deletaModal" modal="true" autosized="true">
+				<f:facet name="header">
+					<h:outputText value="Deletar" />
+				</f:facet>
+				<f:facet name="controls">
+					<h:outputLink value="#"
+						onclick="#{rich:component('deletaModal')}.hide(); return false;">
+                        Fechar
+                    </h:outputLink>
+				</f:facet>
+				<h:form>
+					<p>
+						Deseja realmente deletar a tarefa:
+						<h:outputText
+							value="#{tarefaController.tarefaSelecionada.descricao}" />
+						?
+					</p>
+					<div class="modal-footer">
+						<a4j:commandButton styleClass="btn btn-sm btn-secondary"
+							execute="@form" render="@form" value="Sair"
+							onclick="#{rich:component('deletaModal')}.hide(); return false;" />
+						<a4j:commandButton styleClass="btn btn-sm btn-danger"
+							action="#{tarefaController.excluir}" value="Confirmar" />
+					</div>
+				</h:form>
+			</rich:popupPanel>
+		</h:form>
+	</ui:define>
+</ui:composition>

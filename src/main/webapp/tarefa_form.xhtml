@@ -1,0 +1,124 @@
+<ui:composition template="/WEB-INF/template/layout_padrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="corpo">
+		<h:form>
+			<h2 class="bd-title" id="content">Cadastro de Tarefas</h2>
+			<p>Lembre-se campos em (*) são de preenchimento obrigatório.</p>
+			<div class="card">
+				<div class="card-body">
+					<h:messages showDetail="true" showSummary="false"
+						errorClass="text-danger" />
+					<div class="row">
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>ID</label>
+								<h:inputText styleClass="form-control" id="id"
+									value="#{tarefaController.tarefa.id}" readonly="true" />
+							</div>
+						</div>
+						<div class="col-md-5">
+							<div class="form-group">
+								<label>Data de Criação</label>
+								<h:inputText styleClass="form-control" id="dataCriacao"
+									value="#{tarefaController.tarefa.dataCriacao}" readonly="true">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+								</h:inputText>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<div class="form-group">
+								<label>Data de Conclusão</label>
+								<h:inputText styleClass="form-control" id="dataConclusao"
+									value="#{tarefaController.tarefa.dataConclusao}"
+									readonly="true">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+								</h:inputText>
+							</div>
+						</div>
+						<div class="col-md-10">
+							<div class="form-group">
+								<label>Titulo *</label>
+								<h:inputText styleClass="form-control" id="titulo"
+									label="Descrição" maxlength="100"
+									value="#{tarefaController.tarefa.titulo}" required="true"
+									onkeyup="this.value = this.value.toUpperCase().replace(/[^A-Z ]/g, '')"
+									onpaste="this.value = this.value.toUpperCase().replace(/[^A-Z ]/g, '')"
+									oninput="this.value = this.value.toUpperCase().replace(/[^A-Z ]/g, '')" />
+							</div>
+						</div>
+						<div class="col-md-10">
+							<div class="form-group">
+								<label>Descrição *</label>
+								<h:inputText styleClass="form-control" id="descricao"
+									label="Descrição" maxlength="100"
+									value="#{tarefaController.tarefa.descricao}" required="true"
+									onkeyup="this.value = this.value.toUpperCase().replace(/[^A-Z ]/g, '')"
+									onpaste="this.value = this.value.toUpperCase().replace(/[^A-Z ]/g, '')"
+									oninput="this.value = this.value.toUpperCase().replace(/[^A-Z ]/g, '')" />
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Projeto *</label>
+								<h:selectOneMenu styleClass="form-control" id="projetos"
+									converter="projetoConverter"
+									value="#{tarefaController.tarefa.projeto}">
+									<f:selectItems value="#{tarefaController.projetos}" var="prj"
+										itemLabel="#{prj.descricao}" itemValue="#{prj}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Prioridade *</label>
+								<h:selectOneMenu styleClass="form-control" id="prioridade"
+									value="#{tarefaController.tarefa.prioridade}" required="true">
+									<f:selectItems value="#{tarefaController.prioridades}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Estimativa em Horas *</label>
+								<h:inputText styleClass="form-control" id="estimativaHoras"
+									value="#{tarefaController.tarefa.estimativaHoras}"
+									required="true" />
+								<small class="form-text text-muted">Informe a estimativa
+									de horas para esta tarefa.</small>
+							</div>
+						</div>
+
+						<div class="col-md-12">
+							<div class="form-group">
+								<label>Observações</label>
+								<h:inputTextarea styleClass="form-control" rows="6"
+									id="observacao" label="Observações"
+									value="#{tarefaController.tarefa.observacoes}" />
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-check">
+								<h:selectBooleanCheckbox styleClass="form-check-input"
+									id="status" label="Status"
+									value="#{tarefaController.tarefa.status}" />
+								<label class="form-check-label">Finalizada</label>
+							</div>
+						</div>
+					</div>
+					<h:panelGrid columns="2" style="margin-top: 10px">
+						<h:commandButton styleClass="btn btn-primary" value="Gravar"
+							action="#{tarefaController.gravar}"
+							disabled="#{tarefaController.tarefa.status eq true ? 'true' : false}" />
+						<h:commandButton styleClass="btn btn-outline-secondary"
+							value="Cancelar" action="index" immediate="true" />
+					</h:panelGrid>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

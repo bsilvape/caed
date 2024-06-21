@@ -1,0 +1,35 @@
+<ui:composition template="/WEB-INF/template/layout_padrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<ui:define name="corpo">
+		<rich:panel>
+			<h2 class="bd-title" id="content">Cadastro de Projetos</h2>
+			<p>
+				Neste módulo só é permitido criar projetos. <br /> Para deletar
+				e/ou editar solicitar ao TI ou editar diretamente via banco de
+				dados.
+			</p>
+			<a:commandButton styleClass="btn btn-sm btn-outline-primary"
+				style="margin-bottom: 10px" value="Adicionar Novo Projeto"
+				action="#{projetoController.criarNovoProjeto}" />
+
+			<rich:dataTable value="#{projetoController.projetos}" var="prj"
+				id="dataTable" class="table table-sm table-bordered">
+				<rich:column>
+					<f:facet name="header">#</f:facet>
+					<h:outputText value="#{prj.id}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">Descrição</f:facet>
+					<h:outputText value="#{prj.descricao}" />
+				</rich:column>
+			</rich:dataTable>
+		</rich:panel>
+	</ui:define>
+
+</ui:composition>
